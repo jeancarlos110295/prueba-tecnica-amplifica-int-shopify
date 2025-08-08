@@ -124,8 +124,8 @@ npm run dev -- --host
 
 ```mermaid
 flowchart TD
-    A[Usuario autenticado en Laravel] --> B[Click en 'Conectar Shopify']
-    B --> C[Redirección a página de permisos de Shopify (OAuth)]
+    A[Usuario autenticado en Laravel] --> B[Click en "Conectar Shopify"]
+    B --> C["Redirección a página de permisos de Shopify (OAuth)"]
     C --> D[Usuario autoriza la app]
     D --> E[Shopify redirige a /shopify/callback con 'code' y 'shop']
     E --> F[Laravel intercambia 'code' por 'access_token']
