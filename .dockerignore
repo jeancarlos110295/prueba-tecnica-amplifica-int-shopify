@@ -1,0 +1,43 @@
+# Archivos y directorios de control de versiones
+.git/
+.gitignore
+.svn/
+.hg/
+
+# Archivos de entorno
+*.env*
+!*.env.example
+
+# Directorios de dependencias
+**/node_modules/
+**/bower_components/
+
+# Archivos de configuración y log de desarrollo
+npm-debug.log
+yarn-error.log
+config.json
+
+# Directorios de caché
+.cache/
+.next/cache/
+
+# Directorios de compilación y dist
+dist/
+build/
+out/
+release/
+
+# Directorios de pruebas y documentación
+tests/
+test/
+__tests__/
+coverage/
+docs/
+
+# Archivos y directorios específicos de IDE / editores
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.code-workspace
+.vscode/
+*.swp
