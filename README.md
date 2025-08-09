@@ -120,24 +120,38 @@ npm run dev -- --host
 
 ---
 
-## ▶️ Flujo de uso
+## ▶️ Flujo de uso (explicado)
 
-```mermaid
-flowchart TD
-    A[Usuario autenticado en Laravel] --> B[Click en "Conectar Shopify"]
-    B --> C["Redirección a página de permisos de Shopify (OAuth)"]
-    C --> D[Usuario autoriza la app]
-    D --> E[Shopify redirige a /shopify/callback con 'code' y 'shop']
-    E --> F[Laravel intercambia 'code' por 'access_token']
-    F --> G[Guardar credenciales en BD (ConnectedShop)]
-    G --> H[Visualizar Productos / Pedidos]
-    H --> I[Exportar a Excel]
-```
+1) **Autenticación en Laravel**
+   - El usuario inicia sesión y llega al *Dashboard*.
 
-1. **Autenticarse** en Laravel.
-2. En el **Dashboard**, hacer clic en **"Conectar Shopify"**.
-3. Aceptar permisos en Shopify (OAuth).
-4. Una vez conectada la tienda:
+2) **Conectar Shopify (inicio de OAuth)**
+   - En el *Dashboard* hay un botón **“Conectar Shopify”** que llama:
+     - `GET /shopify/install?shop=<tu-tienda>.myshopify.com`
+   - El backend construye la URL de autorización de Shopify y **redirige** al panel de permisos.
+
+3) **Permisos en Shopify**
+   - Shopify muestra los permisos solicitados (ej. `read_products`, `read_orders`).
+   - El usuario **acepta**.
+
+4) **Callback a la app**
+   - Shopify redirige a:
+     - `GET /shopify/callback?code=...&shop=<tu-tienda>.myshopify.com`
+   - El backend **intercambia** `code` por `access_token` (Admin REST API).
+
+5) **Persistencia de credenciales**
+   - Se guarda en BD (tabla `connected_shops`) el `shop` y el `access_token`, asociados al usuario autenticado.
+
+6) **Uso de la integración**
+   - **Productos:** `GET /shopify/products` → lista paginada (cards con Tailwind: nombre, SKU, precio, imagen).
+   - **Pedidos (últimos 30 días):** `GET /shopify/pedidos` → cliente, fecha, items, estado.
+   - **Exportación:** 
+     - Productos a Excel: `GET /export/productos.xlsx`
+
+### Notas importantes
+- Asegura que **APP_URL** y las **Redirect URLs** en Shopify coincidan al 100% (mismo host/esquema/puerto).
+
+1. Una vez conectada la tienda:
    - Ir a **/shopify/products** para ver productos.
      - Usar botón de **Descargar Excel**.
    - Ir a **/shopify/pedidos** para ver pedidos recientes.
