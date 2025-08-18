@@ -51,72 +51,90 @@ git clone https://github.com/jeancarlos110295/prueba-tecnica-amplifica-int-shopi
 cd prueba-tecnica-amplifica-int-shopify
 ```
 
-### 2. Configurar variables de entorno
+### 2. Configurar variables de entorno (Docker)
+
 Copia el archivo `.env.example` y renómbralo:
+
 ```bash
 cp .env.example .env
 ```
+
 Edita las variables según tu entorno:
 
-#### Variables para base de datos
-```
-POSTGRES_DB=nombre_bd
-POSTGRES_USER=usuario_bd
-POSTGRES_PASSWORD=clave_bd
-POSTGRES_PORT=5432
-```
+#### Variables para autenticacion con ngrok
 
-#### Variables de Laravel
-```
-DB_DATABASE=nombre_bd
-DB_USERNAME=usuario_bd
-DB_PASSWORD=clave_bd
-DB_PORT=5432
-DB_HOST=db
-APP_URL=<URL_NGROK>
-SHOPIFY_API_KEY=<tu_api_key>
-SHOPIFY_API_SECRET=<tu_api_secret>
-SHOPIFY_URL_SHOP=<tu-tienda.myshopify.com>
-```
+Se debe obtener el token, ingresando al siguiente link: https://dashboard.ngrok.com/get-started/your-authtoken.
 
-> ⚠️ El valor de `APP_URL` debe ser la URL HTTPS entregada por Ngrok (se obtiene desde http://localhost:4040).
+Despues de obtener el token configurarlo en la siguiente variable de entorno:
+
+```
+NGROK_AUTHTOKEN=""
+```
 
 ---
 
 ### 3. Construir y levantar contenedores
+
 ```bash
 docker-compose up -d --build
 ```
 
+Despues de que se termine de hacer el build, verificar que los contenedores esten corriendo.
+
 ---
 
 ### 4. Instalar dependencias de Laravel
+
 Accede al contenedor de la aplicación:
+
 ```bash
 docker exec -it container_ecommerce_amplifica_app bash
 ```
-Dentro del contenedor:
+
+### Pasos a seguir en el contenedor
+
 ```bash
 composer install
 ```
 
 ---
 
-### 5. Configurar Laravel
+### Configurar Laravel
+
+Copia el archivo `.env.example` y renómbralo:
+
 ```bash
-php artisan optimize
+cp .env.example .env
+```
+
+Ingresar a la siguiente url: http://localhost:4040
+
+Para obtener la URL HTTPS entregada por Ngrok
+
+```
+APP_URL=<URL_NGROK>
+SHOPIFY_API_KEY=<tu_api_key>
+SHOPIFY_API_SECRET=<tu_api_secret>
+SHOPIFY_URL_SHOP=<tu-tienda.myshopify.com>
+```
+
+```bash
+php artisan key:generate &&
+php artisan optimize &&
 php artisan migrate
 ```
 
 ---
 
-### 6. Ejecutar Vite (Tailwind + JS)
-Dentro del contenedor:
+### Ejecutar Vite (Tailwind + JS)
+
 ```bash
-npm install
+npm install &&
 npm run dev -- --host
 ```
 > Esto iniciará el servidor de Vite y permitirá la recarga en caliente de CSS/JS.
+
+Si todo se ejecuta bien sin errores en el contenedor, al ingresar a la url entregada por Ngrok, no deberian de existir errores.
 
 ---
 
